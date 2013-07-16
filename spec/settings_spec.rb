@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Settings" do
   before(:each) do
     @root = Pathname.new(File.expand_path('..', __FILE__))
-    Environment = stub("Environment", root: @root)
+    Environment = stub("Environment", root: @root, to_sym: :vagrant)
     Environment.stub(:root).and_return(@root)
     
     hash = {

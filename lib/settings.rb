@@ -9,7 +9,7 @@ module Settings
       @_mash ||= begin
         settings_hash = [
           Environment.root.join('config', 'settings.yml'),
-          Environment.root.join('config', 'settings', "#{Environment}.yml"),
+          Environment.root.join('config', 'settings', "#{Environment.to_sym}.yml"),
           Environment.root.join('config', 'settings.local.yml')
         ].select(&:exist?).map do |path|
           yaml = File.read(path)
