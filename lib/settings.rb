@@ -8,9 +8,9 @@ module Settings
     def _mash
       @_mash ||= begin
         settings_hash = [
-          Environment.root.join('config', 'settings.yml'),
-          Environment.root.join('config', 'settings', "#{Environment.to_sym}.yml"),
-          Environment.root.join('config', 'settings.local.yml')
+          _root.join('config', 'settings.yml'),
+          _root.join('config', 'settings', "#{_env}.yml"),
+          _root.join('config', 'settings.local.yml')
         ].select(&:exist?).map do |path|
           yaml = File.read(path)
           YAML.load(yaml) unless yaml.empty?
@@ -26,6 +26,29 @@ module Settings
       else
         super
       end
+    end
+    
+  private
+    def _root
+      if _rails?
+        Rails.root
+      else
+        Pathname.new(Dir.pwd)
+      end
+    end
+    
+    def _env
+      if _rails?
+        Rails.env
+      elsif ENV['RAILS_ENV']
+        ENV['RAILS_ENV']
+      else
+        :development
+      end
+    end
+    
+    def _rails?
+      const_defined?(:Rails)
     end
   end
 end

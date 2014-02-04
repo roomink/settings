@@ -3,8 +3,6 @@ require 'spec_helper'
 describe "Settings" do
   before(:each) do
     @root = Pathname.new(File.expand_path('..', __FILE__))
-    Environment = stub("Environment", root: @root, to_sym: :vagrant)
-    Environment.stub(:root).and_return(@root)
     
     hash = {
       redis: {
@@ -23,6 +21,10 @@ describe "Settings" do
   end
   
   describe "any method" do
+    before(:each) do
+      Settings.stub(:_root).and_return(@root)
+    end
+    
     it "is delegated to a mash" do
       Settings.redis.db.should == 1
       Settings.mongo.db.should == 'lenta_test'
