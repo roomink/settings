@@ -1,24 +1,25 @@
 # Settings
 
-TODO: Write a gem description
+This gem provides ruby applications with a global `Settings` object loaded from YAML files.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-    gem 'settings'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install settings
+```ruby
+# Gemfile
+gem 'settings', github: 'roomink/settings'
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+`Settings` is a nested `Hashie::Mash` populated with values from these files in your app's root:
+
+* `config/settings.yml`
+* `config/#{Rails.env}.yml`
+* `config/settings.local.yml`
+
+The files are loaded in that exact order so environment-specific settings overwrite global settings, and local settings override them both.
+
+Missing files are silently skipped.
 
 ## Contributing
 

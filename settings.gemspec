@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['7@7vn.ru']
   spec.description   = 'Hashie::Mash-like settings'
   spec.summary       = 'Hashie::Mash-like settings loaded from YAML files.'
-  spec.homepage      = ''
+  spec.homepage      = 'https://github.com/roomink/settings'
   spec.license       = 'MIT'
   
   spec.files         = `git ls-files`.split($/)
