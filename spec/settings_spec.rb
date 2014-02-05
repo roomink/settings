@@ -1,38 +1,39 @@
 require 'spec_helper'
 
-describe "Settings" do
-  before(:each) do
-    @root = Pathname.new(File.expand_path('..', __FILE__))
-    
-    hash = {
-      redis: {
-        db: 1
-      },
-      mongo: {
-        db: 'lenta_test'
-      }
+def create_config(root)
+  hash = {
+    redis: {
+      db: 1
+    },
+    mongo: {
+      db: 'lenta_test'
     }
-    yaml = YAML.dump(hash)
-    
-    FileUtils.mkdir(@root + 'config')
-    File.open(@root + 'config/settings.yml', 'w') do |file|
-      file.write(yaml)
-    end
-  end
+  }
+  yaml = YAML.dump(hash)
   
-  describe "any method" do
+  FileUtils.mkdir(root + 'config')
+  File.open(root + 'config/settings.yml', 'w') do |file|
+    file.write(yaml)
+  end
+end
+
+describe "Settings" do
+  let(:root) { Pathname.new(__FILE__).join('..') }
+  
+  describe ".method_missing" do
     before(:each) do
-      Settings.stub(:_root).and_return(@root)
+      create_config(root)
+      Settings.stub(:_root).and_return(root)
     end
     
     it "is delegated to a mash" do
-      Settings.redis.db.should == 1
-      Settings.mongo.db.should == 'lenta_test'
-      Settings.a_.b_.c.should be_nil
+      expect(Settings.redis.db).to eq(1)
+      expect(Settings.mongo.db).to eq('lenta_test')
+      expect(Settings.a_.b_.c).to be_nil
     end
-  end
-  
-  after(:each) do
-    FileUtils.rm_r(@root + 'config')
+    
+    after(:each) do
+      FileUtils.rm_r(root + 'config')
+    end
   end
 end
