@@ -21,6 +21,16 @@ The files are loaded in that exact order so environment-specific settings overwr
 
 Missing files are silently skipped.
 
+### Reloading data
+
+Settings are automatically filled with data from YAML files on the first call and cached for subsequent calls. If you need to reload this data without restarting the app you can do this:
+
+```ruby
+Settings.reload!
+```
+
+This call just flushes the cache - the files will be loaded next time you access some value.
+
 ## Contributing
 
 1. Fork it

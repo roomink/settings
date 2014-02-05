@@ -5,6 +5,11 @@ require 'yaml'
 
 module Settings
   class << self
+    def reload!
+      @_mash = nil
+    end
+    
+  private
     def _mash
       @_mash ||= begin
         settings_hash = [
@@ -28,7 +33,6 @@ module Settings
       end
     end
     
-  private
     def _root
       if _rails?
         Rails.root

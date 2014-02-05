@@ -17,6 +17,10 @@ def create_config(root)
   end
 end
 
+def remove_config(root)
+  FileUtils.rm_r(root + 'config')
+end
+
 def stub_rails
   rails = double("Rails", root: root, env: :production)
   Object.const_set(:Rails, rails)
@@ -42,7 +46,29 @@ describe "Settings" do
     end
     
     after(:each) do
-      FileUtils.rm_r(root + 'config')
+      remove_config(root)
+    end
+  end
+  
+  describe ".reload!" do
+    before(:each) do
+      create_config(root)
+      Settings.stub(:_root).and_return(root)
+    end
+    
+    it "reloads the data from YAML files" do
+      expect(Settings.redis.db).to eq(1)
+      
+      File.open(root + 'config/settings.yml', 'w') do |file|
+        file.write YAML.dump(redis: { db: 2 })
+      end
+      
+      Settings.reload!
+      expect(Settings.redis.db).to eq(2)
+    end
+    
+    after(:each) do
+      remove_config(root)
     end
   end
   
