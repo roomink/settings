@@ -41,7 +41,7 @@ module Settings
       if _rails?
         Rails.env
       elsif ENV['RAILS_ENV']
-        ENV['RAILS_ENV']
+        ENV['RAILS_ENV'].to_sym
       else
         :development
       end
