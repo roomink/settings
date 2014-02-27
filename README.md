@@ -14,8 +14,9 @@ gem 'settings', github: 'roomink/settings'
 `Settings` is a nested `Hashie::Mash` populated with values from these files in your app's root:
 
 * `config/settings.yml`
-* `config/#{Rails.env}.yml`
+* `config/settings/#{Rails.env}.yml`
 * `config/settings.local.yml`
+* `config/settings/#{Rails.env}.local.yml`
 
 The files are loaded in that exact order so environment-specific settings overwrite global settings, and local settings override them both.
 
