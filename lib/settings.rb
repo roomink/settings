@@ -12,17 +12,24 @@ module Settings
   private
     def _mash
       @_mash ||= begin
-        settings_hash = [
-          _root.join('config', 'settings.yml'),
-          _root.join('config', 'settings', "#{_env}.yml"),
-          _root.join('config', 'settings.local.yml')
-        ].select(&:exist?).map do |path|
+        settings_hash = _paths.map do |path|
           yaml = File.read(path)
           YAML.load(yaml) unless yaml.empty?
         end.compact.inject({}, :deep_merge)
         
         Hashie::Mash.new(settings_hash)
       end
+    end
+    
+    def _paths
+      [
+        %w(settings.yml),
+        %W(settings #{_env}.yml),
+        %w(settings.local.yml),
+        %W(settings #{_env}.local.yml)
+      ].map do |path_parts|
+        _root.join('config', *path_parts)
+      end.select(&:exist?)
     end
     
     def method_missing(method_name, *args, &block)
