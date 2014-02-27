@@ -4,9 +4,11 @@ require 'active_support/core_ext/hash/deep_merge'
 require 'yaml'
 
 module Settings
+  ENVIRONMENTS = %i(development test staging production)
+  
   class << self
     def reload!
-      @_mash = nil
+      @_mashes = nil
     end
     
     def ai
@@ -14,31 +16,40 @@ module Settings
     end
     
   private
-    def _mash
-      @_mash ||= begin
-        settings_hash = _paths.map do |path|
-          yaml = File.read(path)
-          YAML.load(yaml) unless yaml.empty?
-        end.compact.inject({}, :deep_merge)
-        
-        Hashie::Mash.new(settings_hash)
+    def _mashes
+      @_mashes ||= begin
+        ENVIRONMENTS.each_with_object(Hash.new) do |environment, hash|
+          env_settings = _load_settings_for(environment)
+          hash[environment] = Hashie::Mash.new(env_settings)
+        end
       end
     end
     
-    def _paths
+    def _load_settings_for(environment)
+      _paths_for(_env).map do |path|
+        _read_file(path)
+      end.compact.inject({}, :deep_merge)
+    end
+    
+    def _read_file(path)
+      yaml = File.read(path)
+      YAML.load(yaml) unless yaml.empty?
+    end
+    
+    def _paths_for(environment)
       [
         %w(settings.yml),
-        %W(settings #{_env}.yml),
+        %W(settings #{environment}.yml),
         %w(settings.local.yml),
-        %W(settings #{_env}.local.yml)
+        %W(settings #{environment}.local.yml)
       ].map do |path_parts|
         _root.join('config', *path_parts)
       end.select(&:exist?)
     end
     
     def method_missing(method_name, *args, &block)
-      if _mash.respond_to?(method_name)
-        _mash.send(method_name, &block)
+      if _mashes[_env].respond_to?(method_name)
+        _mashes[_env].send(method_name, &block)
       else
         super
       end
