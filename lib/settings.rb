@@ -26,7 +26,7 @@ module Settings
     end
     
     def _load_settings_for(environment)
-      _paths_for(_env).map do |path|
+      _paths_for(environment).map do |path|
         _read_file(path)
       end.compact.inject({}, :deep_merge)
     end
