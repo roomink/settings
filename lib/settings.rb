@@ -9,6 +9,10 @@ module Settings
       @_mash = nil
     end
     
+    def ai
+      _mash.ai
+    end
+    
   private
     def _mash
       @_mash ||= begin
