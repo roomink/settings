@@ -76,6 +76,26 @@ describe Settings do
     end
   end
   
+  describe ".map" do
+    before(:each) do
+      create_config_files(root)
+      Settings.stub(:_root).and_return(root)
+    end
+    
+    it "yields each mash and returns results indexed by environment" do
+      expect(Settings.map(&:postgresql)).to eq(
+        development: Settings.for(:development).postgresql,
+        test:        Settings.for(:test).postgresql,
+        staging:     Settings.for(:staging).postgresql,
+        production:  Settings.for(:production).postgresql
+      )
+    end
+    
+    after(:each) do
+      remove_config_files(root)
+    end
+  end
+  
   describe ".for" do
     before(:each) do
       create_config_files(root)

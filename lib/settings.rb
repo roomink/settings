@@ -19,6 +19,14 @@ module Settings
       _mashes[environment]
     end
     
+    def map
+      raise ArgumentError, 'Settings.map should be called with a block' unless block_given?
+      
+      _mashes.each_with_object(Hash.new) do |(environment, mash), hash|
+        hash[environment] = yield(mash)
+      end
+    end
+    
   private
     def method_missing(method_name, *args, &block)
       if _mashes[_env].respond_to?(method_name)
