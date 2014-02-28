@@ -12,10 +12,18 @@ module Settings
     end
     
     def ai
-      _mash.ai
+      _mashes[_env].ai
     end
     
   private
+    def method_missing(method_name, *args, &block)
+      if _mashes[_env].respond_to?(method_name)
+        _mashes[_env].send(method_name, &block)
+      else
+        super
+      end
+    end
+    
     def _mashes
       @_mashes ||= begin
         ENVIRONMENTS.each_with_object(Hash.new) do |environment, hash|
@@ -31,11 +39,6 @@ module Settings
       end.compact.inject({}, :deep_merge)
     end
     
-    def _read_file(path)
-      yaml = File.read(path)
-      YAML.load(yaml) unless yaml.empty?
-    end
-    
     def _paths_for(environment)
       [
         %w(settings.yml),
@@ -47,12 +50,9 @@ module Settings
       end.select(&:exist?)
     end
     
-    def method_missing(method_name, *args, &block)
-      if _mashes[_env].respond_to?(method_name)
-        _mashes[_env].send(method_name, &block)
-      else
-        super
-      end
+    def _read_file(path)
+      yaml = File.read(path)
+      YAML.load(yaml) unless yaml.empty?
     end
     
     def _root
