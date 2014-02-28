@@ -66,9 +66,24 @@ describe Settings do
       Settings.stub(:_root).and_return(root)
     end
     
-    it "is delegated to a mash" do
+    it "is delegated to a mash for current environment" do
       expect(Settings.redis.db).to eq(0)
       expect(Settings.a_.b_.c).to be_nil
+    end
+    
+    after(:each) do
+      remove_config_files(root)
+    end
+  end
+  
+  describe ".for" do
+    before(:each) do
+      create_config_files(root)
+      Settings.stub(:_root).and_return(root)
+    end
+    
+    it "returns settings for the specified environment" do
+      expect(Settings.for(:test).postgresql.database).to eq('rails_test')
     end
     
     after(:each) do

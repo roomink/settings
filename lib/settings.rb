@@ -15,6 +15,10 @@ module Settings
       _mashes[_env].ai
     end
     
+    def for(environment)
+      _mashes[environment]
+    end
+    
   private
     def method_missing(method_name, *args, &block)
       if _mashes[_env].respond_to?(method_name)
