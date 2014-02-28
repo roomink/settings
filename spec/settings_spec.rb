@@ -1,23 +1,50 @@
 require 'spec_helper'
 
-def create_config(root)
-  hash = {
-    redis: {
-      db: 1
+def create_config_files(root)
+  FileUtils.mkdir_p(root + 'config' + 'settings')
+  
+  settings = {
+    'settings.yml' => {
+      postgresql: {
+        adapter:  'postgresql',
+        encoding: 'unicode'
+      },
+      redis: {
+        host: 'localhost',
+        port: 6379
+      }
     },
-    mongo: {
-      db: 'lenta_test'
+    'settings/development.yml' => {
+      postgresql: { database: 'rails_development' },
+      redis:      { db: 0 }
+    },
+    'settings/test.yml' => {
+      postgresql: { database: 'rails_test' },
+      redis:      { db: 1 }
+    },
+    'settings/staging.yml' => {
+      postgresql: { database: 'rails_staging' },
+      redis:      { db: 2 }
+    },
+    'settings/production.yml' => {
+      postgresql: { database: 'rails_production' },
+      redis:      { db: 3 }
+    },
+    'settings/development.local.yml' => {
+      postgresql: { database: 'rails' }
     }
   }
-  yaml = YAML.dump(hash)
   
-  FileUtils.mkdir(root + 'config')
-  File.open(root + 'config/settings.yml', 'w') do |file|
-    file.write(yaml)
+  settings.each do |filename, settings_hash|
+    yaml = YAML.dump(settings_hash)
+    
+    File.open(root + 'config' + filename, 'w') do |file|
+      file.write(yaml)
+    end
   end
 end
 
-def remove_config(root)
+def remove_config_files(root)
   FileUtils.rm_r(root + 'config')
 end
 
@@ -30,36 +57,35 @@ def unstub_rails
   Object.send(:remove_const, :Rails)
 end
 
-describe "Settings" do
+describe Settings do
   let(:root) { Pathname.new(__FILE__).join('..') }
   
   describe ".method_missing" do
     before(:each) do
-      create_config(root)
+      create_config_files(root)
       Settings.stub(:_root).and_return(root)
     end
     
     it "is delegated to a mash" do
-      expect(Settings.redis.db).to eq(1)
-      expect(Settings.mongo.db).to eq('lenta_test')
+      expect(Settings.redis.db).to eq(0)
       expect(Settings.a_.b_.c).to be_nil
     end
     
     after(:each) do
-      remove_config(root)
+      remove_config_files(root)
     end
   end
   
   describe ".reload!" do
     before(:each) do
-      create_config(root)
+      create_config_files(root)
       Settings.stub(:_root).and_return(root)
     end
     
     it "reloads the data from YAML files" do
-      expect(Settings.redis.db).to eq(1)
+      expect(Settings.redis.db).to eq(0)
       
-      File.open(root + 'config/settings.yml', 'w') do |file|
+      File.open(root + 'config/settings/development.yml', 'w') do |file|
         file.write YAML.dump(redis: { db: 2 })
       end
       
@@ -68,7 +94,7 @@ describe "Settings" do
     end
     
     after(:each) do
-      remove_config(root)
+      remove_config_files(root)
     end
   end
   
