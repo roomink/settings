@@ -37,6 +37,13 @@ Usually `Settings` works with data for your current environment determined by th
 Settings.for(:test).redis.db # => 1
 ```
 
+There is also a `Settings.map` method which yields setting sets for all configurations and returns them as a hash keyed by the environments:
+
+```ruby
+Settings.map(&:redis)
+# => { development: { host: 'localhost', port: 6379, db: 0 }, test: ... }
+```
+
 ### Reloading data
 
 Settings are automatically filled with data from YAML files on the first call and cached for subsequent calls (this applies to settings for all environments). If you need to reload this data without restarting the app you can do this:
