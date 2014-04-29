@@ -11,8 +11,8 @@ module Settings
       @_mashes = nil
     end
     
-    def ai
-      _mashes[_env].ai
+    def ai(*args)
+      _mashes[_env].ai(*args)
     end
     
     def for(environment)
