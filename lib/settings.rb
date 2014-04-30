@@ -13,7 +13,7 @@ module Settings
     end
     
     def ai(*args)
-      _mashes[_env].ai(*args)
+      _mashes[Utils.env].ai(*args)
     end
     
     def for(environment)
