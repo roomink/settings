@@ -54,7 +54,7 @@ describe Settings do
   describe ".method_missing" do
     before(:each) do
       create_config_files(root)
-      Settings::Utils.stub(:root).and_return(root)
+      allow(Settings::Utils).to receive(:root).and_return(root)
     end
     
     it "is delegated to a mash for current environment" do
@@ -70,7 +70,7 @@ describe Settings do
   describe ".map" do
     before(:each) do
       create_config_files(root)
-      Settings::Utils.stub(:root).and_return(root)
+      allow(Settings::Utils).to receive(:root).and_return(root)
     end
     
     it "yields each mash and returns results indexed by environment" do
@@ -90,7 +90,7 @@ describe Settings do
   describe ".for" do
     before(:each) do
       create_config_files(root)
-      Settings::Utils.stub(:root).and_return(root)
+      allow(Settings::Utils).to receive(:root).and_return(root)
     end
     
     it "returns settings for the specified environment" do
@@ -105,7 +105,7 @@ describe Settings do
   describe ".reload!" do
     before(:each) do
       create_config_files(root)
-      Settings::Utils.stub(:root).and_return(root)
+      allow(Settings::Utils).to receive(:root).and_return(root)
     end
     
     it "reloads the data from YAML files" do
