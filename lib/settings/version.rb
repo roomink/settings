@@ -1,3 +1,3 @@
 module Settings
-  VERSION = '0.4.beta'
+  VERSION = '0.4'
 end
