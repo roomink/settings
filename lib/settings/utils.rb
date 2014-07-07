@@ -28,6 +28,8 @@ module Settings
           Rails.env
         elsif ENV['RAILS_ENV']
           ENV['RAILS_ENV']
+        elsif ENV['RACK_ENV']
+          ENV['RACK_ENV']
         else
           :development
         end.to_sym

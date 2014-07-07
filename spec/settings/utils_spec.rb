@@ -64,6 +64,20 @@ describe Settings::Utils do
       end
     end
     
+    context "with RACK_ENV" do
+      before(:each) do
+        ENV['RACK_ENV'] = 'staging'
+      end
+      
+      it "returns RACK_ENV" do
+        expect(Settings::Utils.env).to eq(:staging)
+      end
+      
+      after(:each) do
+        ENV.delete('RACK_ENV')
+      end
+    end
+    
     context "without anything" do
       it "returns :development" do
         expect(Settings::Utils.env).to eq(:development)
