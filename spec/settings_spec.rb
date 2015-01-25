@@ -51,13 +51,13 @@ end
 describe Settings do
   let(:root) { Pathname.new(__FILE__).join('..') }
   
-  describe ".method_missing" do
+  describe '.method_missing' do
     before(:each) do
       create_config_files(root)
       allow(Settings::Utils).to receive(:root).and_return(root)
     end
     
-    it "is delegated to a mash for current environment" do
+    it 'is delegated to a mash for current environment' do
       expect(Settings.redis.db).to eq(0)
       expect(Settings.a_.b_.c).to be_nil
     end
@@ -67,13 +67,13 @@ describe Settings do
     end
   end
   
-  describe ".map" do
+  describe '.map' do
     before(:each) do
       create_config_files(root)
       allow(Settings::Utils).to receive(:root).and_return(root)
     end
     
-    it "yields each mash and returns results indexed by environment" do
+    it 'yields each mash and returns results indexed by environment' do
       expect(Settings.map(&:postgresql)).to eq(
         development: Settings.for(:development).postgresql,
         test:        Settings.for(:test).postgresql,
@@ -87,13 +87,13 @@ describe Settings do
     end
   end
   
-  describe ".for" do
+  describe '.for' do
     before(:each) do
       create_config_files(root)
       allow(Settings::Utils).to receive(:root).and_return(root)
     end
     
-    it "returns settings for the specified environment" do
+    it 'returns settings for the specified environment' do
       expect(Settings.for(:test).postgresql.database).to eq('rails_test')
     end
     
@@ -102,13 +102,13 @@ describe Settings do
     end
   end
   
-  describe ".reload!" do
+  describe '.reload!' do
     before(:each) do
       create_config_files(root)
       allow(Settings::Utils).to receive(:root).and_return(root)
     end
     
-    it "reloads the data from YAML files" do
+    it 'reloads the data from YAML files' do
       expect(Settings.redis.db).to eq(0)
       
       File.open(root + 'config/settings/development.yml', 'w') do |file|
