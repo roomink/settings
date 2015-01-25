@@ -66,6 +66,21 @@ Settings.reload!
 This call just flushes the cache - the files will be loaded next time
 you access some value.
 
+### Environments list
+
+By default settings are loaded for `development`, `test` and `production`
+environments. If you need to load settings for some custom environment you need
+to configure `settings` to use it:
+
+``` ruby
+Settings::Utils.environments << :staging
+```
+
+**Important: this must be done before the first call to settings
+data!** Changing the environments list after the data was loaded
+will have no effect (read the "Reloading data" section above for details on
+how the data is being loaded).
+
 ## Contributing
 
 1. Fork it

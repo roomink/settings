@@ -5,8 +5,6 @@ require 'yaml'
 require 'settings/utils'
 
 module Settings
-  ENVIRONMENTS = %i(development test staging production)
-  
   class << self
     def reload!
       @_mashes = nil
@@ -39,7 +37,7 @@ module Settings
     
     def _mashes
       @_mashes ||= begin
-        ENVIRONMENTS.each_with_object(Hash.new) do |environment, hash|
+        Utils.environments.each_with_object(Hash.new) do |environment, hash|
           env_settings = Utils.load_settings_for(environment)
           hash[environment] = Hashie::Mash.new(env_settings)
         end

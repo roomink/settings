@@ -1,6 +1,12 @@
 module Settings
   module Utils
+    DEFAULT_ENVIRONMENTS = %i(development test production)
+    
     class << self
+      def environments
+        @environments ||= DEFAULT_ENVIRONMENTS
+      end
+      
       def load_settings_for(environment)
         paths_for(environment).map do |path|
           read_file(path)

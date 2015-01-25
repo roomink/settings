@@ -51,6 +51,10 @@ end
 describe Settings do
   let(:root) { Pathname.new(__FILE__).join('..') }
   
+  before(:all) do
+    Settings::Utils.environments << :staging
+  end
+  
   describe '.method_missing' do
     before(:each) do
       create_config_files(root)
